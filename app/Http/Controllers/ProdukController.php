@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 
@@ -84,19 +84,33 @@ class ProdukController extends Controller
      */
     public function update(Request $request, Produk $produk)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
-            'stok' => 'required|integer|min:0',
-            'deskripsi' => 'required|string',
-            'status' => 'required|boolean',
-            'kategori' => 'required|in:' . implode(',', Produk::getKategoriValid())
-        ]);
+        return DB::transaction(function () use ($request, $produk) {
+            // Cek versi produk
+            if ($produk->version !== intval($request->input('version'))) {
+                return redirect()->route('produk.edit', $produk)
+                    ->withErrors([
+                        'version' => 'Versi produk berubah, tolong refresh',
+                    ])
+                    ->withInput();
+            }
 
-        $produk->update($validated);
+            $validated = $request->validate([
+                'nama' => 'required|string|max:255',
+                'harga' => 'required|numeric|min:0',
+                'stok' => 'required|integer|min:0',
+                'deskripsi' => 'required|string',
+                'status' => 'required|boolean',
+                'kategori' => 'required|in:' . implode(',', Produk::getKategoriValid())
+            ]);
 
-        return redirect()->route('produk.index')
-            ->with('success', 'Produk berhasil diperbarui');
+            // Tambahkan version ke data yang akan diupdate
+            $validated['version'] = $produk->version + 1;
+
+            $produk->update($validated);
+
+            return redirect()->route('produk.index')
+                ->with('success', 'Produk berhasil diperbarui');
+        });
     }
 
     /**

@@ -64,7 +64,7 @@
                     <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
                     <textarea name="deskripsi" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('deskripsi', $produk->deskripsi) }}</textarea>
                 </div>
-
+                <input type="text" name="version" value="{{ old('version', $produk->version) }}">
                 <div class="flex justify-end">
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update Produk</button>
                 </div>

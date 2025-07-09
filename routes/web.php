@@ -5,6 +5,7 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\TransaksiStockController;
 
 // TODO: daftarkan route anda di sini
 
@@ -31,5 +32,8 @@ Route::post('/barang', [ProdukController::class, 'store'])->name('produk.store')
 Route::get('/barang/{produk}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
 Route::put('/barang/{produk}', [ProdukController::class, 'update'])->name('produk.update');
 Route::delete('/barang/{produk}', [ProdukController::class, 'destroy'])->name('produk.destroy');
+
+// Transaksi Stocks Routes
+Route::get('/transaksi-stocks', [TransaksiStockController::class, 'index'])->name('transaksi-stocks.index');
 
 require __DIR__.'/auth.php';
